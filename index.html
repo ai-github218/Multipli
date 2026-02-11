@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>掛け算ゲーム</title>
+</head>
+<body>
+<h1>掛け算ゲーム</h1>
+<p id="question"></p>
+<input type="number" id="answer">
+<button onclick="check()">答える</button>
+<p id="result"></p>
+<p>スコア: <span id="score">0</span></p>
+
+<script>
+let num1, num2;
+let score = 0;
+
+function newQuestion() {
+    num1 = Math.floor(Math.random() * 9) + 1;
+    num2 = Math.floor(Math.random() * 9) + 1;
+    document.getElementById("question").textContent = num1 + " × " + num2 + " = ?";
+}
+
+function check() {
+    const ans = Number(document.getElementById("answer").value);
+    if (ans === num1 * num2) {
+        score++;
+        document.getElementById("result").textContent = "正解！";
+    } else {
+        document.getElementById("result").textContent = "不正解！正解は " + (num1 * num2);
+    }
+    document.getElementById("score").textContent = score;
+    document.getElementById("answer").value = "";
+    newQuestion();
+}
+
+newQuestion();
+</script>
+</body>
+</html>
