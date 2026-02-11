@@ -7,6 +7,7 @@
   body { font-family: sans-serif; text-align: center; margin-top: 50px; }
   #result { font-weight: bold; font-size: 1.2em; margin: 10px 0; }
   #time { font-size: 1.2em; color: blue; }
+  input, button { font-size: 1em; padding: 5px; }
 </style>
 </head>
 <body>
@@ -16,22 +17,19 @@
 <p id="question"></p>
 
 <input type="number" id="answer">
-<button onclick="check()">答える</button>
+<button onclick="check()" id="answerBtn">答える</button>
 
 <p id="result"></p>
 <p>スコア: <span id="score">0</span></p>
-<p>残り時間: <span id="time">10</span>秒</p>
-
-<!-- 音声ファイル（ローカルにアップロードしてください） -->
-<audio id="correctSound" src="correct.mp3"></audio>
-<audio id="wrongSound" src="wrong.mp3"></audio>
+<p>残り時間: <span id="time">30</span>秒</p>
 
 <script>
 let num1, num2;
 let score = 0;
-let time = 10;
+let time = 30; // ゲーム全体の制限時間（秒）
 let timer;
 
+// 新しい問題を出す
 function newQuestion() {
     num1 = Math.floor(Math.random() * 9) + 1;
     num2 = Math.floor(Math.random() * 9) + 1;
@@ -42,43 +40,39 @@ function newQuestion() {
 
 // タイマー開始
 function startTimer() {
-    clearInterval(timer); // 前のタイマーをクリア
-    time = 10;
-    document.getElementById("time").textContent = time;
     timer = setInterval(() => {
         time--;
         document.getElementById("time").textContent = time;
         if(time <= 0){
             clearInterval(timer);
-            document.getElementById("result").textContent = "⏰ 時間切れ！正解は " + (num1*num2);
-            document.getElementById("wrongSound").play(); // 音は必ずユーザー操作後に鳴らす
-            score = 0;
-            document.getElementById("score").textContent = score;
-            setTimeout(() => {
-                newQuestion();
-                startTimer();
-            }, 1000);
+            document.getElementById("result").textContent = "⏰ 時間切れ！ゲーム終了";
+            document.getElementById("answerBtn").disabled = true;
+            document.getElementById("answer").disabled = true;
         }
     }, 1000);
 }
 
 // 回答チェック
 function check() {
+    if(time <= 0) return; // ゲーム終了後は処理しない
+
     const ans = Number(document.getElementById("answer").value);
+
+    // 回答で残り時間を3秒増やす
+    time += 3;
+    document.getElementById("time").textContent = time;
+
     if(ans === num1 * num2){
         score++;
         document.getElementById("result").textContent = "✅ 正解！";
         document.getElementById("result").style.color = "green";
-        document.getElementById("correctSound").play();
     } else {
         document.getElementById("result").textContent = "❌ 不正解！正解は " + (num1*num2);
         document.getElementById("result").style.color = "red";
-        document.getElementById("wrongSound").play();
-        score = 0;
     }
+
     document.getElementById("score").textContent = score;
     newQuestion();
-    startTimer(); // タイマーをリセット
 }
 
 // 初期化
