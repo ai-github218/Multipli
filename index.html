@@ -14,15 +14,17 @@
 
 <h1>掛け算ゲーム</h1>
 
-<p>レベル: <span id="level">1</span></p>
-<p>スコア: <span id="score">0</span></p>
 <p>残り時間: <span id="time">30</span>秒</p>
+
+<p>レベル: <span id="level">1</span></p>
 
 <h2 id="question"></h2>
 
 <input type="number" id="answer" placeholder="答えを入力">
 
 <p id="result"></p>
+
+<p>スコア: <span id="score">0</span></p>
 
 <script>
 let num1, num2;
@@ -40,7 +42,7 @@ function newQuestion() {
     num2 = Math.floor(Math.random() * max) + 1;
 
     document.getElementById("question").textContent =
-        "Lv." + level + " : " + num1 + " × " + num2 + " = ?";
+        num1 + " × " + num2 + " = ?";
 
     document.getElementById("answer").value = "";
     document.getElementById("answer").focus();
