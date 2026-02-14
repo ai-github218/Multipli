@@ -25,6 +25,8 @@
 <p id="result"></p>
 
 <p>スコア: <span id="score">0</span></p>
+<p>連続正解: <span id="combo">0</span></p>
+<p>最大連続: <span id="maxCombo">0</span></p>
 
 <script>
 let num1, num2;
@@ -35,22 +37,18 @@ let level = 1;
 let correctCount = 0;
 let questionStartTime;
 
+let combo = 0;       // 連続正解
+let maxCombo = 0;    // 最大連続
+
 // 新しい問題
 function newQuestion() {
 
-    // レベル = 桁数
     const digits = level;
 
-    // 最小値（例：2桁なら10、3桁なら100）
     const min = Math.pow(10, digits - 1);
-
-    // 最大値（例：2桁なら99、3桁なら999）
     const max = Math.pow(10, digits) - 1;
 
-    // 桁数固定の乱数
     num1 = Math.floor(Math.random() * (max - min + 1)) + min;
-
-    // もう片方は常に1桁
     num2 = Math.floor(Math.random() * 9) + 1;
 
     document.getElementById("question").textContent =
@@ -61,7 +59,6 @@ function newQuestion() {
 
     questionStartTime = Date.now();
 }
-
 
 // タイマー
 function startTimer() {
@@ -89,7 +86,6 @@ function check() {
 
     if(ans === correctAnswer){
 
-        // スピードボーナス
         if(answerTime < 2){
             addScore = 3;
         } else if(answerTime < 4){
@@ -101,23 +97,34 @@ function check() {
         score += addScore;
         correctCount++;
 
+        combo++; // 連続正解＋１
+
+        if(combo > maxCombo){
+            maxCombo = combo;
+        }
+
         document.getElementById("result").textContent =
             "✅ +" + addScore + "点 (" + answerTime.toFixed(1) + "秒)";
         document.getElementById("result").style.color = "green";
 
-        // レベルアップ（5問ごと）
         if(correctCount % 5 === 0){
             level++;
             document.getElementById("level").textContent = level;
         }
 
     } else {
+
+        combo = 0; // ミスでリセット
+
         document.getElementById("result").textContent =
             "❌ 正解は " + correctAnswer;
         document.getElementById("result").style.color = "red";
     }
 
     document.getElementById("score").textContent = score;
+    document.getElementById("combo").textContent = combo;
+    document.getElementById("maxCombo").textContent = maxCombo;
+
     newQuestion();
 }
 
